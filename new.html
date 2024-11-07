@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF Sequence with Interactive Background</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+            background-color: #000821;
+        }
+
+        /* Background iframe */
+        #backgroundIframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Place it behind everything else */
+            display: none; /* Hidden initially */
+            border: none; /* Remove border */
+        }
+
+        /* GIFs styling */
+        img.gif {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            display: none;
+            position: absolute; /* Ensures the GIFs are positioned on top */
+            top: 0;
+            left: 0;
+            z-index: 10; /* Ensure GIFs are on top of the iframe */
+            pointer-events: none; /* Ensure GIFs do not block clicks */
+        }
+
+        /* Button styling */
+        /* Button styling */
+#startBtn {
+    position: absolute;
+    bottom: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    z-index: 20;
+    background-color: #00A6FF; /* Background color similar to the button in the image */
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    color: #ffffff; /* White text color */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); /* Adds a shadow to the button */
+    font-family: 'Arial', sans-serif; /* Similar font style */
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#startBtn:hover {
+    background-color: #008ACB; /* Darker blue on hover */
+}
+
+
+@media only screen and (max-width: 768px) {
+            #startBtn {
+                bottom: 15%;
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+           
+            img.gif {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        @media only screen and (max-width: 480px) {
+            #startBtn {
+                bottom: 30%;
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+            
+            img.gif {
+                margin-top: 20px;
+                width: 100%;
+                height: 80%;
+                
+            }
+        }
+
+        #logoHeader {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15; /* Ensure the logo is above the GIFs */
+        }
+    </style>
+</head>
+<body>
+ <!-- Logo Header -->
+ <div id="logoHeader">
+    <img width="80" height="20" src="https://animation.basharcare.com/wp-content/uploads/2024/08/S.A.S.I-1.png" class="attachment-full size-full wp-image-196" alt="" srcset="https://animation.basharcare.com/wp-content/uploads/2024/08/S.A.S.I-1.png 314w, https://animation.basharcare.com/wp-content/uploads/2024/08/S.A.S.I-1-300x76.png 300w" sizes="(max-width: 314px) 100vw, 314px">
+</div>
+
+    <!-- GIFs -->
+    <img id="gif1" class="gif" src="1.gif" alt="1st GIF">
+    <img id="gif2" class="gif" src="2.gif" alt="2nd GIF">
+    <img id="gif3" class="gif" src="3.gif" alt="3rd GIF">
+
+    <!-- Button -->
+    <button id="startBtn">Click to Source Network</button>
+
+    <!-- Hidden iframe initially -->
+    <iframe id="backgroundIframe" src="https://animation.basharcare.com/" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation"></iframe>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const gif1 = document.getElementById('gif1');
+            const gif2 = document.getElementById('gif2');
+            const gif3 = document.getElementById('gif3');
+            const startBtn = document.getElementById('startBtn');
+            const backgroundIframe = document.getElementById('backgroundIframe');
+
+            // Key used in localStorage to identify the tab
+            const tabKey = 'tab-identifier';
+
+            // Function to show GIFs and button
+            function showGifs() {
+                // Show the first GIF
+                gif1.style.display = 'block';
+
+                // After a delay, show the second GIF and the button
+                setTimeout(() => {
+                    gif1.style.display = 'none';
+                    gif2.style.display = 'block';
+                    startBtn.style.display = 'block';
+                }, 1000); // Adjust the delay (in milliseconds) as needed
+
+                // When the button is clicked, show the third GIF and the iframe
+                startBtn.addEventListener('click', () => {
+                    gif1.style.display = 'none';
+                    gif2.style.display = 'none';
+                    gif3.style.display = 'block';
+                    gif3.style.pointerEvents = 'none'; // Ensure the final GIF does not block interaction
+
+                    // Show the iframe
+                    backgroundIframe.style.display = 'block';
+                    startBtn.style.display = 'none';
+                    logoHeader.style.display = 'none';
+                    // Optionally hide the third GIF after a certain time
+                    setTimeout(() => {
+                       
+                        gif3.style.display = 'none'; // Hide the third GIF
+                        backgroundIframe.style.zIndex = '20'; // Bring the iframe to the front
+                        localStorage.setItem('gifsShown', 'true'); // Track GIFs shown across tabs
+                        sessionStorage.setItem('sessionGifsShown1', 'true');
+                    }, 2500); // Adjust this time to match the duration of 3.gif
+                });
+            }
+
+            // Check if a tab with the same key already exists
+            const sessionGifsShown = sessionStorage.getItem('sessionGifsShown1');
+            const existingTab = localStorage.getItem(tabKey);
+            console.log(existingTab);
+            console.log('Session Storage GIFs Shown:', sessionGifsShown);
+
+            if (!existingTab) {
+                if (!sessionGifsShown) {
+                    localStorage.setItem(tabKey, 'true');
+               console.log('1');
+                showGifs();
+            }else
+            {localStorage.setItem(tabKey, 'true');
+               /* backgroundIframe.style.display = 'block';
+                backgroundIframe.style.zIndex = '20'; // Ensure iframe is interactive*/
+                console.log('2');
+                showGifs();
+            }
+
+            } else {
+                // Tab already exists, directly show the iframe
+                showGifs();
+                console.log('3');
+                
+            }
+
+            // Detect when the tab or window is closed to reset session state
+            window.addEventListener('beforeunload', () => {
+                localStorage.removeItem(tabKey); // Reset tab identifier on tab close
+            });
+        });
+    </script>
+
+</body>
+</html>
